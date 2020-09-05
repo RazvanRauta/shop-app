@@ -1,5 +1,17 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "components/*": ["components/*"],
+      "assets/*": ["assets/*"],
+      "constants/*": ["constants/*"],
+      "hooks/*": ["hooks/*"],
+      "models/*": ["models/*"],
+      "navigation/*": ["navigation/*"],
+      "screens/*": ["screens/*"],
+      "store/*": ["store/*"],
+      "data/*": ["data/*"]
+    },
     "allowSyntheticDefaultImports": true,
     "jsx": "react-native",
     "lib": ["dom", "esnext"],
@@ -7,6 +19,8 @@
     "noEmit": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "strict": true
-  }
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+  },
 }

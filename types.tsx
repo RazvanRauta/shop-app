@@ -1,17 +1,12 @@
+import { StackScreenProps } from '@react-navigation/stack'
+
 export type RootStackParamList = {
-  Root: undefined;
-  NotFound: undefined;
-};
+  ProductsOverviewScreen: undefined
+  ProductDetailScreen: { productId?: string; productTitle?: string }
+  NotFound: undefined
+}
 
-export type BottomTabParamList = {
-  TabOne: undefined;
-  TabTwo: undefined;
-};
-
-export type TabOneParamList = {
-  TabOneScreen: undefined;
-};
-
-export type TabTwoParamList = {
-  TabTwoScreen: undefined;
-};
+export type RootStackScreenProps = StackScreenProps<
+  RootStackParamList,
+  'ProductsOverviewScreen' | 'ProductDetailScreen'
+>
