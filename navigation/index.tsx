@@ -50,13 +50,18 @@ function RootNavigator() {
       <RootStack.Screen
         name="ProductsOverviewScreen"
         component={ProductsOverviewScreen}
-        options={{ headerTitle: 'All products' }}
+        options={{
+          headerTitle: 'All products',
+          headerTitleStyle: { fontFamily: 'open-sans-bold' },
+        }}
       />
       <RootStack.Screen
         name="ProductDetailScreen"
         component={ProductDetailScreen}
         options={({ route }) => ({
           headerTitle: route.params.productTitle,
+          headerTitleStyle: { fontFamily: 'open-sans-bold' },
+          headerBackTitleStyle: { fontFamily: 'open-sans-bold' },
         })}
       />
 

@@ -1,8 +1,9 @@
 import React from 'react'
-import { FlatList, GestureResponderEvent } from 'react-native'
-import { useSelector } from 'react-redux'
+import { FlatList } from 'react-native'
+import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store/rootReducer'
 import ProductItem from 'components/shop/Product/ProductItem'
+import * as cartActions from 'store/actions/cart'
 
 import { RootStackScreenProps } from 'types'
 
@@ -12,10 +13,7 @@ const ProductsOverviewScreen: React.FC<RootStackScreenProps> = ({
   const products = useSelector(
     (state: RootState) => state.products.availableProducts
   )
-
-  const onAddToCart = (event: GestureResponderEvent) => {
-    console.log(event.currentTarget)
-  }
+  const dispatch = useDispatch()
 
   return (
     <FlatList
@@ -23,7 +21,9 @@ const ProductsOverviewScreen: React.FC<RootStackScreenProps> = ({
       renderItem={(itemData) => (
         <ProductItem
           {...itemData.item}
-          onAddToCart={onAddToCart}
+          onAddToCart={() => {
+            dispatch(cartActions.addToCart(itemData.item))
+          }}
           onViewDetail={() =>
             navigation.navigate('ProductDetailScreen', {
               productId: itemData.item.id,

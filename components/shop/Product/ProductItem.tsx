@@ -1,4 +1,4 @@
-import React, { ReactChild, ReactChildren } from 'react'
+import React from 'react'
 import {
   StyleSheet,
   Text,
@@ -6,24 +6,16 @@ import {
   Image,
   Button,
   GestureResponderEvent,
-  TouchableOpacity,
-  TouchableNativeFeedback,
 } from 'react-native'
 import Colors from 'constants/Colors'
-import { isAndroid } from 'constants/Platform'
-
-interface AuxProps {
-  children: ReactChild | ReactChildren
-  onPress: (event: GestureResponderEvent) => void
-  useForeground: boolean | undefined
-}
+import TouchableWrapper from 'components/TouchableWrapper'
 
 interface OwnProps {
   title: string
   price: number
   imageUrl: string
   onViewDetail: (event: GestureResponderEvent) => void
-  onAddToCart: (event: GestureResponderEvent) => void
+  onAddToCart: () => void
 }
 
 type Props = OwnProps
@@ -35,37 +27,34 @@ const ProductItem: React.FC<Props> = ({
   onViewDetail,
   onAddToCart,
 }) => {
-  const TouchableWrapper = ({ children, ...rest }: AuxProps) =>
-    isAndroid ? (
-      <TouchableNativeFeedback {...rest}>{children}</TouchableNativeFeedback>
-    ) : (
-      <TouchableOpacity {...rest}>{children}</TouchableOpacity>
-    )
-
   return (
-    <TouchableWrapper onPress={onViewDetail} useForeground>
-      <View style={styles.product}>
-        <View style={styles.imageContainer}>
-          <Image style={styles.image} source={{ uri: imageUrl }} />
-        </View>
-        <View style={styles.details}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.price}>${price.toFixed(2)}</Text>
-        </View>
-        <View style={styles.actions}>
-          <Button
-            color={Colors.primary}
-            onPress={onViewDetail}
-            title="View Details"
-          />
-          <Button
-            color={Colors.primary}
-            onPress={onAddToCart}
-            title="To Cart"
-          />
-        </View>
+    <View style={styles.product}>
+      <View style={styles.touchable}>
+        <TouchableWrapper onPress={onViewDetail} useForeground>
+          <View>
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={{ uri: imageUrl }} />
+            </View>
+            <View style={styles.details}>
+              <Text style={styles.title}>{title}</Text>
+              <Text style={styles.price}>${price.toFixed(2)}</Text>
+            </View>
+            <View style={styles.actions}>
+              <Button
+                color={Colors.primary}
+                onPress={onViewDetail}
+                title="View Details"
+              />
+              <Button
+                color={Colors.primary}
+                onPress={onAddToCart}
+                title="To Cart"
+              />
+            </View>
+          </View>
+        </TouchableWrapper>
       </View>
-    </TouchableWrapper>
+    </View>
   )
 }
 
@@ -81,6 +70,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 300,
     margin: 20,
+  },
+  touchable: {
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   imageContainer: {
     width: '100%',
@@ -100,11 +93,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    marginVertical: 4,
+    marginVertical: 2,
+    fontFamily: 'open-sans-bold',
   },
   price: {
     fontSize: 14,
     color: '#888',
+    fontFamily: 'open-sans-bold',
   },
   actions: {
     flexDirection: 'row',
