@@ -5,9 +5,9 @@ import { RootState } from 'store/rootReducer'
 import ProductItem from 'components/shop/Product/ProductItem'
 import * as cartActions from 'store/actions/cart'
 
-import { RootStackScreenProps } from 'types'
+import { ProductsStackScreenProps } from 'types'
 
-const ProductsOverviewScreen: React.FC<RootStackScreenProps> = ({
+const ProductsOverviewScreen: React.FC<ProductsStackScreenProps> = ({
   navigation,
 }) => {
   const products = useSelector(

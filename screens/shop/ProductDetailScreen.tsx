@@ -4,10 +4,10 @@ import React from 'react'
 import { Text, View, StyleSheet, ScrollView, Image, Button } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store/rootReducer'
-import { RootStackScreenProps } from 'types'
+import { ProductsStackScreenProps } from 'types'
 import * as cartActions from 'store/actions/cart'
 
-const ProductDetailScreen: React.FC<RootStackScreenProps> = ({ route }) => {
+const ProductDetailScreen: React.FC<ProductsStackScreenProps> = ({ route }) => {
   const productId = route.params?.productId
   const selectedProduct = useSelector((state: RootState) =>
     state.products.availableProducts.find(

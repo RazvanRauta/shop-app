@@ -1,15 +1,16 @@
 import React, { FunctionComponent } from 'react'
 import { StyleSheet, View, Button, Text } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootStackScreenProps } from 'types'
+import { ProductsStackScreenProps } from 'types'
 import { RootState } from 'store/rootReducer'
 
 import Colors from 'constants/Colors'
 import { FlatList } from 'react-native-gesture-handler'
 import CartItem from 'components/shop/CartItem/CartItem'
 import * as cartActions from 'store/actions/cart'
+import * as orderActions from 'store/actions/orders'
 
-const CartScreen: FunctionComponent<RootStackScreenProps> = () => {
+const CartScreen: FunctionComponent<ProductsStackScreenProps> = () => {
   const cartTotalAmount = useSelector(
     (state: RootState) => state.cart.totalAmount
   )
@@ -30,7 +31,9 @@ const CartScreen: FunctionComponent<RootStackScreenProps> = () => {
           disabled={!cartItems.length}
           color={Colors.accent}
           title="Order Now"
-          onPress={() => {}}
+          onPress={() =>
+            dispatch(orderActions.addOrder(cartItems, cartTotalAmount))
+          }
         />
       </View>
       <FlatList

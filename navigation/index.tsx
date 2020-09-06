@@ -4,12 +4,17 @@ import {
   DarkTheme,
 } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+
 import * as React from 'react'
 import { ColorSchemeName } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
-import NotFoundScreen from '../screens/NotFoundScreen'
-import { RootStackParamList } from '../types'
+import {
+  OrdersStackParamList,
+  ProductsStackParamList,
+  ShopStackParamList,
+} from '../types'
 import LinkingConfiguration from './LinkingConfiguration'
 import Colors from 'constants/Colors'
 import { isAndroid } from 'constants/Platform'
@@ -17,6 +22,8 @@ import ProductsOverviewScreen from 'screens/shop/ProductsOverviewScreen'
 import ProductDetailScreen from 'screens/shop/ProductDetailScreen'
 import HeaderButton from 'components/UI/HeaderButton'
 import CartScreen from 'screens/shop/CartScreen'
+import OrderScreen from 'screens/shop/OrderScreen'
+import { Ionicons } from '@expo/vector-icons'
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -37,24 +44,37 @@ export default function Navigation({
 
 // A root stack navigator is often used for displaying modals on top of all other content
 // Read more here: https://reactnavigation.org/docs/modal
-const RootStack = createStackNavigator<RootStackParamList>()
+const RootStack = createStackNavigator()
 
 function RootNavigator() {
   return (
-    <RootStack.Navigator
+    <RootStack.Navigator initialRouteName="ProductsStack">
+      <RootStack.Screen
+        name="ShopNavigator"
+        component={ShopNavigator}
+        options={{ headerShown: false }}
+      />
+    </RootStack.Navigator>
+  )
+}
+
+const ProductsStack = createStackNavigator<ProductsStackParamList>()
+
+function ProductsNavigator() {
+  return (
+    <ProductsStack.Navigator
       screenOptions={{
         headerStyle: {
           backgroundColor: isAndroid ? Colors.primary : '',
         },
         headerTintColor: isAndroid ? 'white' : '',
       }}
-      initialRouteName="ProductsOverviewScreen"
     >
-      <RootStack.Screen
+      <ProductsStack.Screen
         name="ProductsOverviewScreen"
         component={ProductsOverviewScreen}
         options={({ navigation }) => ({
-          headerTitle: 'All products',
+          headerTitle: 'All Products',
           headerTitleStyle: { fontFamily: 'open-sans-bold' },
           headerRight: () => (
             <HeaderButtons HeaderButtonComponent={HeaderButton}>
@@ -65,9 +85,18 @@ function RootNavigator() {
               />
             </HeaderButtons>
           ),
+          headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+              <Item
+                title="Orders"
+                iconName={isAndroid ? 'md-menu' : 'ios-menu'}
+                onPress={() => navigation.toggleDrawer()}
+              />
+            </HeaderButtons>
+          ),
         })}
       />
-      <RootStack.Screen
+      <ProductsStack.Screen
         name="ProductDetailScreen"
         component={ProductDetailScreen}
         options={({ route }) => ({
@@ -77,7 +106,7 @@ function RootNavigator() {
         })}
       />
 
-      <RootStack.Screen
+      <ProductsStack.Screen
         name="CartScreen"
         component={CartScreen}
         options={{
@@ -85,39 +114,77 @@ function RootNavigator() {
           headerTitleStyle: { fontFamily: 'open-sans-bold' },
         }}
       />
-
-      <RootStack.Screen
-        name="NotFound"
-        component={NotFoundScreen}
-        options={{ title: 'Oops!' }}
-      />
-    </RootStack.Navigator>
+    </ProductsStack.Navigator>
   )
 }
 
-// const ProductsStack = createStackNavigator<ProductsStackParamList>()
+const OrdersStack = createStackNavigator<OrdersStackParamList>()
 
-// function ProductsNavigator() {
-//   return (
-//     <ProductsStack.Navigator initialRouteName="ProductsOverviewScreen">
+function OrdersNavigator() {
+  return (
+    <OrdersStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: isAndroid ? Colors.primary : '',
+        },
+        headerTintColor: isAndroid ? 'white' : '',
+      }}
+    >
+      <OrdersStack.Screen
+        name="OrdersScreen"
+        component={OrderScreen}
+        options={({ navigation }) => ({
+          title: 'Your Orders',
+          headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+              <Item
+                title="Orders"
+                iconName={isAndroid ? 'md-menu' : 'ios-menu'}
+                onPress={() => navigation.toggleDrawer()}
+              />
+            </HeaderButtons>
+          ),
+        })}
+      />
+    </OrdersStack.Navigator>
+  )
+}
 
-//     </ProductsStack.Navigator>
-//   )
-// }
+const ShopStack = createDrawerNavigator<ShopStackParamList>()
 
-//Get title for stack
-// function getHeaderTitle(route: RouteProp<RootStackParamList, 'ProductsStack'>) {
-//   // If the focused route is not found, we need to assume it's the initial screen
-//   // This can happen during if there hasn't been any navigation inside the screen
-//   // In our case, it's "Feed" as that's the first screen inside the navigator
-//   const routeName = getFocusedRouteNameFromRoute(route) ?? 'Title not found 0'
-//   console.log(route)
-//   switch (routeName) {
-//     case 'ProductDetailScreen':
-//       return route.params?.productTitle ?? 'Title not found 1'
-//     case 'ProductsOverviewScreen':
-//       return 'All Products'
-//     default:
-//       return 'Title not found 2'
-//   }
-// }
+function ShopNavigator() {
+  return (
+    <ShopStack.Navigator
+      drawerContentOptions={{ activeTintColor: Colors.primary }}
+    >
+      <ShopStack.Screen
+        name="ProductsStack"
+        component={ProductsNavigator}
+        options={{
+          title: 'All Products',
+          drawerIcon: (drawerConfig) => (
+            <Ionicons
+              name={isAndroid ? 'md-cart' : 'ios-cart'}
+              size={23}
+              color={drawerConfig.color}
+            />
+          ),
+        }}
+      />
+      <ShopStack.Screen
+        name="OrdersStack"
+        component={OrdersNavigator}
+        options={{
+          title: 'Orders',
+          drawerIcon: (drawerConfig) => (
+            <Ionicons
+              name={isAndroid ? 'md-list' : 'ios-list'}
+              size={23}
+              color={drawerConfig.color}
+            />
+          ),
+        }}
+      />
+    </ShopStack.Navigator>
+  )
+}
