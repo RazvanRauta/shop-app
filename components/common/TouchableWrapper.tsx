@@ -1,14 +1,12 @@
 import { isAndroid } from 'constants/Platform'
 import React, { FunctionComponent } from 'react'
-import { GestureResponderEvent } from 'react-native'
-import {
-  TouchableNativeFeedback,
-  TouchableOpacity,
-} from 'react-native-gesture-handler'
+import { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native'
+import { TouchableNativeFeedback, TouchableOpacity } from 'react-native'
 
 interface AuxProps {
   onPress: (event: GestureResponderEvent) => void
   useForeground: boolean | undefined
+  containerStyle?: StyleProp<ViewStyle>
 }
 
 const TouchableWrapper: FunctionComponent<AuxProps> = ({ children, ...rest }) =>

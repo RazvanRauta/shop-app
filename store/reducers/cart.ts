@@ -17,14 +17,16 @@ export default (state = initialState, action: CartActionTypes): CartState => {
           existingCartItem.quantity + 1,
           addedProduct.price,
           addedProduct.title,
-          existingCartItem.sum + addedProduct.price
+          existingCartItem.sum + addedProduct.price,
+          addedProduct.imageUrl
         )
       } else {
         updatedOrNewCartItem = new CartItem(
           1,
           addedProduct.price,
           addedProduct.title,
-          addedProduct.price
+          addedProduct.price,
+          addedProduct.imageUrl
         )
       }
       return {

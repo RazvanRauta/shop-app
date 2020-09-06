@@ -6,6 +6,7 @@ import {
 import { createStackNavigator } from '@react-navigation/stack'
 import * as React from 'react'
 import { ColorSchemeName } from 'react-native'
+import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
 import NotFoundScreen from '../screens/NotFoundScreen'
 import { RootStackParamList } from '../types'
@@ -14,6 +15,8 @@ import Colors from 'constants/Colors'
 import { isAndroid } from 'constants/Platform'
 import ProductsOverviewScreen from 'screens/shop/ProductsOverviewScreen'
 import ProductDetailScreen from 'screens/shop/ProductDetailScreen'
+import HeaderButton from 'components/UI/HeaderButton'
+import CartScreen from 'screens/shop/CartScreen'
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -50,10 +53,19 @@ function RootNavigator() {
       <RootStack.Screen
         name="ProductsOverviewScreen"
         component={ProductsOverviewScreen}
-        options={{
+        options={({ navigation }) => ({
           headerTitle: 'All products',
           headerTitleStyle: { fontFamily: 'open-sans-bold' },
-        }}
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+              <Item
+                title="Cart"
+                iconName={isAndroid ? 'md-cart' : 'ios-cart'}
+                onPress={() => navigation.navigate('CartScreen')}
+              />
+            </HeaderButtons>
+          ),
+        })}
       />
       <RootStack.Screen
         name="ProductDetailScreen"
@@ -63,6 +75,15 @@ function RootNavigator() {
           headerTitleStyle: { fontFamily: 'open-sans-bold' },
           headerBackTitleStyle: { fontFamily: 'open-sans-bold' },
         })}
+      />
+
+      <RootStack.Screen
+        name="CartScreen"
+        component={CartScreen}
+        options={{
+          headerTitle: 'Cart',
+          headerTitleStyle: { fontFamily: 'open-sans-bold' },
+        }}
       />
 
       <RootStack.Screen

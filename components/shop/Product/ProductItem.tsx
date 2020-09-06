@@ -8,7 +8,7 @@ import {
   GestureResponderEvent,
 } from 'react-native'
 import Colors from 'constants/Colors'
-import TouchableWrapper from 'components/TouchableWrapper'
+import TouchableWrapper from 'components/common/TouchableWrapper'
 
 interface OwnProps {
   title: string
@@ -30,7 +30,7 @@ const ProductItem: React.FC<Props> = ({
   return (
     <View style={styles.product}>
       <View style={styles.touchable}>
-        <TouchableWrapper onPress={onViewDetail} useForeground>
+        <TouchableWrapper onPress={onViewDetail} useForeground={true}>
           <View>
             <View style={styles.imageContainer}>
               <Image style={styles.image} source={{ uri: imageUrl }} />
@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
     borderRadius: 10,
+    backgroundColor: 'white',
     height: 300,
     margin: 20,
   },
