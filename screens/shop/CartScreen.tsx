@@ -1,23 +1,24 @@
 import React, { FunctionComponent } from 'react'
 import { StyleSheet, View, Button, Text } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootStackScreenProps } from 'types'
 import { RootState } from 'store/rootReducer'
 
 import Colors from 'constants/Colors'
 import { FlatList } from 'react-native-gesture-handler'
 import CartItem from 'components/shop/CartItem/CartItem'
+import * as cartActions from 'store/actions/cart'
 
 const CartScreen: FunctionComponent<RootStackScreenProps> = () => {
   const cartTotalAmount = useSelector(
     (state: RootState) => state.cart.totalAmount
   )
   const cartItems = useSelector((state: RootState) =>
-    Object.keys(state.cart.items).map((key) => ({
-      key,
-      value: state.cart.items[key],
-    }))
+    Object.entries(state.cart.items)
+      .map(([id, item]) => ({ item, id }))
+      .sort((a, b) => (a.id > b.id ? 1 : -1))
   )
+  const dispatch = useDispatch()
   return (
     <View style={styles.cartScreen}>
       <View style={styles.summary}>
@@ -34,9 +35,14 @@ const CartScreen: FunctionComponent<RootStackScreenProps> = () => {
       </View>
       <FlatList
         data={cartItems}
-        keyExtractor={(item) => item.key}
+        keyExtractor={(item) => item.id}
         renderItem={(itemData) => (
-          <CartItem {...itemData.item.value} onRemove={() => {}} />
+          <CartItem
+            {...itemData.item.item}
+            onRemove={() =>
+              dispatch(cartActions.removeFromCart(itemData.item.id))
+            }
+          />
         )}
       />
     </View>

@@ -1,7 +1,6 @@
 import CartItem from 'models/cart-item'
 import Product from 'models/product'
-
-export const ADD_TO_CART = 'ADD_TO_CART'
+import { ADD_TO_CART, REMOVE_FROM_CART } from './actions'
 
 export interface CartState {
   items: {
@@ -15,4 +14,9 @@ export interface AddToCartAction {
   product: Product
 }
 
-export type CartActionTypes = AddToCartAction
+export interface RemoveFromCartAction {
+  type: typeof REMOVE_FROM_CART
+  pid: string
+}
+
+export type CartActionTypes = AddToCartAction | RemoveFromCartAction

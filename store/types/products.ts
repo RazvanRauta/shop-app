@@ -1,7 +1,5 @@
 import Product from 'models/product'
-
-export const SEND_MESSAGE = 'SEND_MESSAGE'
-export const DELETE_MESSAGE = 'DELETE_MESSAGE'
+import { SEND_MESSAGE } from './actions'
 
 export interface ProductsState {
   availableProducts: Product[]
