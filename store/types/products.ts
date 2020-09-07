@@ -6,7 +6,7 @@ export interface ProductsState {
   userProducts: Product[]
 }
 
-interface DeleteProductAction {
+export interface DeleteProductAction {
   type: typeof DELETE_PRODUCT
   pid: string
 }

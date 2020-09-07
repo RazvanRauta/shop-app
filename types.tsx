@@ -24,7 +24,7 @@ export type ProductsStackScreenProps = StackScreenProps<
 export type ShopStackParamList = {
   ProductsStack: undefined
   OrdersStack: undefined
-  UserProductsStack: undefined
+  AdminStack: undefined
 }
 
 export type ShopStackScreenProps = DrawerScreenProps<
@@ -32,13 +32,14 @@ export type ShopStackScreenProps = DrawerScreenProps<
   'ProductsStack' | 'OrdersStack'
 >
 
-export type UserProductsStackParamList = {
+export type AdminStackParamList = {
   UserProductsScreen: undefined
+  EditProductsScreen: { productId?: string; productTitle?: string }
 }
 
-export type UserProductsScreenProps = StackScreenProps<
-  UserProductsStackParamList,
-  'UserProductsScreen'
+export type AdminScreenProps = StackScreenProps<
+  AdminStackParamList,
+  'UserProductsScreen' | 'EditProductsScreen'
 >
 
 export type OrdersStackParamList = {

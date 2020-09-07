@@ -1,5 +1,10 @@
 import CartItem from 'models/cart-item'
-import { ADD_ORDER, ADD_TO_CART, REMOVE_FROM_CART } from 'store/types/actions'
+import {
+  ADD_ORDER,
+  ADD_TO_CART,
+  REMOVE_FROM_CART,
+  DELETE_PRODUCT,
+} from 'store/types/actions'
 import { CartState, CartActionTypes } from 'store/types/cart'
 const initialState: CartState = {
   items: {},
@@ -61,6 +66,16 @@ export default (state = initialState, action: CartActionTypes): CartState => {
 
     case ADD_ORDER:
       return initialState
+
+    case DELETE_PRODUCT:
+      if (!state.items[action.pid]) return state
+      const updatedItems = { ...state.items }
+      const itemTotal = state.items[action.pid].sum
+      return {
+        ...state,
+        items: updatedItems,
+        totalAmount: state.totalAmount - itemTotal,
+      }
 
     default:
       return state

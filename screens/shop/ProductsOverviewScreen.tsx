@@ -1,15 +1,15 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import { FlatList, Button, ListRenderItemInfo } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store/rootReducer'
+
 import ProductItem from 'components/shop/Product/ProductItem'
 import * as cartActions from 'store/actions/cart'
-
 import { ProductsStackScreenProps } from 'types'
 import Colors from 'constants/Colors'
 import Product from 'models/product'
 
-const ProductsOverviewScreen: React.FC<ProductsStackScreenProps> = ({
+const ProductsOverviewScreen: FunctionComponent<ProductsStackScreenProps> = ({
   navigation,
 }) => {
   const products = useSelector(

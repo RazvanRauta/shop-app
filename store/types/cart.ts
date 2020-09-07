@@ -1,6 +1,7 @@
 import CartItem from 'models/cart-item'
 import Product from 'models/product'
 import { ADD_ORDER, ADD_TO_CART, REMOVE_FROM_CART } from './actions'
+import { DeleteProductAction } from './products'
 
 export interface CartState {
   items: {
@@ -26,3 +27,4 @@ export type CartActionTypes =
   | AddToCartAction
   | RemoveFromCartAction
   | ClearCartAction
+  | DeleteProductAction

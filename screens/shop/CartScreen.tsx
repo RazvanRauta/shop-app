@@ -1,9 +1,9 @@
 import React, { FunctionComponent } from 'react'
 import { StyleSheet, View, Button, Text } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
+
 import { ProductsStackScreenProps } from 'types'
 import { RootState } from 'store/rootReducer'
-
 import Colors from 'constants/Colors'
 import { FlatList } from 'react-native-gesture-handler'
 import CartItem from 'components/shop/CartItem/CartItem'
@@ -25,7 +25,10 @@ const CartScreen: FunctionComponent<ProductsStackScreenProps> = () => {
       <View style={styles.summary}>
         <Text style={styles.totalAmount}>
           Total:
-          <Text style={styles.price}> ${cartTotalAmount.toFixed(2)}</Text>
+          <Text style={styles.price}>
+            {' '}
+            ${Math.round((cartTotalAmount * 100) / 100).toFixed(2)}
+          </Text>
         </Text>
         <Button
           disabled={!cartItems.length}

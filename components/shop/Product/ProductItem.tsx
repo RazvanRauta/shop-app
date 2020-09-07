@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   details: {
     alignItems: 'center',
-    height: '15%',
+    height: '17%',
     padding: 10,
   },
   title: {
@@ -88,6 +88,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignItems: 'center',
     width: '80%',
-    height: '25%',
+    height: '22%',
   },
 })

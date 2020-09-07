@@ -11,10 +11,10 @@ import { ColorSchemeName } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
 import {
+  AdminStackParamList,
   OrdersStackParamList,
   ProductsStackParamList,
   ShopStackParamList,
-  UserProductsStackParamList,
 } from '../types'
 import LinkingConfiguration from './LinkingConfiguration'
 import Colors from 'constants/Colors'
@@ -26,6 +26,7 @@ import CartScreen from 'screens/shop/CartScreen'
 import OrderScreen from 'screens/shop/OrderScreen'
 import { Ionicons } from '@expo/vector-icons'
 import UserProductsScreen from 'screens/user/UserProductsScreen'
+import EditProductScreen from 'screens/user/EditProductScreen'
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -57,6 +58,60 @@ function RootNavigator() {
         options={{ headerShown: false }}
       />
     </RootStack.Navigator>
+  )
+}
+
+const ShopStack = createDrawerNavigator<ShopStackParamList>()
+
+function ShopNavigator() {
+  return (
+    <ShopStack.Navigator
+      drawerContentOptions={{ activeTintColor: Colors.primary }}
+    >
+      <ShopStack.Screen
+        name="ProductsStack"
+        component={ProductsNavigator}
+        options={{
+          title: 'All Products',
+          drawerIcon: (drawerConfig) => (
+            <Ionicons
+              name={isAndroid ? 'md-cart' : 'ios-cart'}
+              size={23}
+              color={drawerConfig.color}
+            />
+          ),
+        }}
+      />
+      <ShopStack.Screen
+        name="OrdersStack"
+        component={OrdersNavigator}
+        options={{
+          title: 'Orders',
+          drawerIcon: (drawerConfig) => (
+            <Ionicons
+              name={isAndroid ? 'md-list' : 'ios-list'}
+              size={23}
+              color={drawerConfig.color}
+            />
+          ),
+        }}
+      />
+
+      <ShopStack.Screen
+        name="AdminStack"
+        component={AdminNavigator}
+        options={{
+          title: 'Users Products',
+          drawerIcon: (drawerConfig) => (
+            <Ionicons
+              name={isAndroid ? 'md-create' : 'ios-create'}
+              size={23}
+              color={drawerConfig.color}
+            />
+          ),
+        }}
+      />
+    </ShopStack.Navigator>
   )
 }
 
@@ -152,11 +207,11 @@ function OrdersNavigator() {
   )
 }
 
-const UserProductsStack = createStackNavigator<UserProductsStackParamList>()
+const AdminStack = createStackNavigator<AdminStackParamList>()
 
-function UserProductsNavigator() {
+function AdminNavigator() {
   return (
-    <UserProductsStack.Navigator
+    <AdminStack.Navigator
       screenOptions={{
         headerStyle: {
           backgroundColor: isAndroid ? Colors.primary : '',
@@ -164,7 +219,7 @@ function UserProductsNavigator() {
         headerTintColor: isAndroid ? 'white' : '',
       }}
     >
-      <UserProductsStack.Screen
+      <AdminStack.Screen
         name="UserProductsScreen"
         component={UserProductsScreen}
         options={({ navigation }) => ({
@@ -178,62 +233,36 @@ function UserProductsNavigator() {
               />
             </HeaderButtons>
           ),
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+              <Item
+                title="Add"
+                iconName={isAndroid ? 'md-create' : 'ios-create'}
+                onPress={() => navigation.navigate('EditProductsScreen')}
+              />
+            </HeaderButtons>
+          ),
         })}
       />
-    </UserProductsStack.Navigator>
-  )
-}
 
-const ShopStack = createDrawerNavigator<ShopStackParamList>()
-
-function ShopNavigator() {
-  return (
-    <ShopStack.Navigator
-      drawerContentOptions={{ activeTintColor: Colors.primary }}
-    >
-      <ShopStack.Screen
-        name="ProductsStack"
-        component={ProductsNavigator}
-        options={{
-          title: 'All Products',
-          drawerIcon: (drawerConfig) => (
-            <Ionicons
-              name={isAndroid ? 'md-cart' : 'ios-cart'}
-              size={23}
-              color={drawerConfig.color}
-            />
+      <AdminStack.Screen
+        name="EditProductsScreen"
+        component={EditProductScreen}
+        options={({ route }) => ({
+          title: route.params?.productTitle
+            ? `Edit: ${route.params.productTitle}`
+            : 'Add Product',
+          headerRight: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+              <Item
+                title="Add"
+                iconName={isAndroid ? 'md-save' : 'ios-save'}
+                onPress={() => {}}
+              />
+            </HeaderButtons>
           ),
-        }}
+        })}
       />
-      <ShopStack.Screen
-        name="OrdersStack"
-        component={OrdersNavigator}
-        options={{
-          title: 'Orders',
-          drawerIcon: (drawerConfig) => (
-            <Ionicons
-              name={isAndroid ? 'md-list' : 'ios-list'}
-              size={23}
-              color={drawerConfig.color}
-            />
-          ),
-        }}
-      />
-
-      <ShopStack.Screen
-        name="UserProductsStack"
-        component={UserProductsNavigator}
-        options={{
-          title: 'Users Products',
-          drawerIcon: (drawerConfig) => (
-            <Ionicons
-              name={isAndroid ? 'md-create' : 'ios-create'}
-              size={23}
-              color={drawerConfig.color}
-            />
-          ),
-        }}
-      />
-    </ShopStack.Navigator>
+    </AdminStack.Navigator>
   )
 }
