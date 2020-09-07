@@ -1,14 +1,14 @@
 import Product from 'models/product'
-import { SEND_MESSAGE } from './actions'
+import { DELETE_PRODUCT } from './actions'
 
 export interface ProductsState {
   availableProducts: Product[]
   userProducts: Product[]
 }
 
-interface ProductsOneAction {
-  type: typeof SEND_MESSAGE
-  payload: Product
+interface DeleteProductAction {
+  type: typeof DELETE_PRODUCT
+  pid: string
 }
 
-export type ProductsActionTypes = ProductsOneAction
+export type ProductsActionTypes = DeleteProductAction

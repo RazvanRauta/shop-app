@@ -14,6 +14,7 @@ import {
   OrdersStackParamList,
   ProductsStackParamList,
   ShopStackParamList,
+  UserProductsStackParamList,
 } from '../types'
 import LinkingConfiguration from './LinkingConfiguration'
 import Colors from 'constants/Colors'
@@ -24,6 +25,7 @@ import HeaderButton from 'components/UI/HeaderButton'
 import CartScreen from 'screens/shop/CartScreen'
 import OrderScreen from 'screens/shop/OrderScreen'
 import { Ionicons } from '@expo/vector-icons'
+import UserProductsScreen from 'screens/user/UserProductsScreen'
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -150,6 +152,38 @@ function OrdersNavigator() {
   )
 }
 
+const UserProductsStack = createStackNavigator<UserProductsStackParamList>()
+
+function UserProductsNavigator() {
+  return (
+    <UserProductsStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: isAndroid ? Colors.primary : '',
+        },
+        headerTintColor: isAndroid ? 'white' : '',
+      }}
+    >
+      <UserProductsStack.Screen
+        name="UserProductsScreen"
+        component={UserProductsScreen}
+        options={({ navigation }) => ({
+          title: 'Your Products',
+          headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+              <Item
+                title="User Products"
+                iconName={isAndroid ? 'md-menu' : 'ios-menu'}
+                onPress={() => navigation.toggleDrawer()}
+              />
+            </HeaderButtons>
+          ),
+        })}
+      />
+    </UserProductsStack.Navigator>
+  )
+}
+
 const ShopStack = createDrawerNavigator<ShopStackParamList>()
 
 function ShopNavigator() {
@@ -179,6 +213,21 @@ function ShopNavigator() {
           drawerIcon: (drawerConfig) => (
             <Ionicons
               name={isAndroid ? 'md-list' : 'ios-list'}
+              size={23}
+              color={drawerConfig.color}
+            />
+          ),
+        }}
+      />
+
+      <ShopStack.Screen
+        name="UserProductsStack"
+        component={UserProductsNavigator}
+        options={{
+          title: 'Users Products',
+          drawerIcon: (drawerConfig) => (
+            <Ionicons
+              name={isAndroid ? 'md-create' : 'ios-create'}
               size={23}
               color={drawerConfig.color}
             />

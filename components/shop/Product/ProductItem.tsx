@@ -1,21 +1,12 @@
 import React from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Button,
-  GestureResponderEvent,
-} from 'react-native'
-import Colors from 'constants/Colors'
+import { StyleSheet, Text, View, Image } from 'react-native'
 import TouchableWrapper from 'components/common/TouchableWrapper'
 
 interface OwnProps {
   title: string
   price: number
   imageUrl: string
-  onViewDetail: (event: GestureResponderEvent) => void
-  onAddToCart: () => void
+  onSelect: () => void
 }
 
 type Props = OwnProps
@@ -24,13 +15,13 @@ const ProductItem: React.FC<Props> = ({
   imageUrl,
   price,
   title,
-  onViewDetail,
-  onAddToCart,
+  onSelect = () => {},
+  children,
 }) => {
   return (
     <View style={styles.product}>
       <View style={styles.touchable}>
-        <TouchableWrapper onPress={onViewDetail} useForeground={true}>
+        <TouchableWrapper onPress={onSelect} useForeground={true}>
           <View>
             <View style={styles.imageContainer}>
               <Image style={styles.image} source={{ uri: imageUrl }} />
@@ -39,18 +30,7 @@ const ProductItem: React.FC<Props> = ({
               <Text style={styles.title}>{title}</Text>
               <Text style={styles.price}>${price.toFixed(2)}</Text>
             </View>
-            <View style={styles.actions}>
-              <Button
-                color={Colors.primary}
-                onPress={onViewDetail}
-                title="View Details"
-              />
-              <Button
-                color={Colors.primary}
-                onPress={onAddToCart}
-                title="To Cart"
-              />
-            </View>
+            <View style={styles.actions}>{children}</View>
           </View>
         </TouchableWrapper>
       </View>

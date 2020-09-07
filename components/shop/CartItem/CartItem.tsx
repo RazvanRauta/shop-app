@@ -7,7 +7,8 @@ import { SansBoldText, SansText } from 'components/common/StyledText'
 import CartItem from 'models/cart-item'
 
 interface OwnProps {
-  onRemove: () => void
+  onRemove?: () => void
+  deletable?: boolean
 }
 
 type Props = CartItem & OwnProps
@@ -17,7 +18,8 @@ const CartItemCard: FunctionComponent<Props> = ({
   productTitle,
   sum,
   imageUrl,
-  onRemove,
+  onRemove = () => {},
+  deletable = true,
 }) => {
   return (
     <View style={styles.cartItem}>
@@ -27,18 +29,20 @@ const CartItemCard: FunctionComponent<Props> = ({
         <SansBoldText style={styles.title}>{productTitle}</SansBoldText>
       </View>
       <View style={styles.itemData}>
-        <SansBoldText style={styles.amount}>${sum}</SansBoldText>
-        <TouchableWrapper
-          containerStyle={styles.deleteButton}
-          onPress={onRemove}
-          useForeground={true}
-        >
-          <Ionicons
-            name={isAndroid ? 'md-trash' : 'ios-trash'}
-            size={23}
-            color="red"
-          />
-        </TouchableWrapper>
+        <SansBoldText style={styles.amount}>${sum.toFixed(2)}</SansBoldText>
+        {deletable && (
+          <TouchableWrapper
+            containerStyle={styles.deleteButton}
+            onPress={onRemove}
+            useForeground={true}
+          >
+            <Ionicons
+              name={isAndroid ? 'md-trash' : 'ios-trash'}
+              size={23}
+              color="red"
+            />
+          </TouchableWrapper>
+        )}
       </View>
     </View>
   )

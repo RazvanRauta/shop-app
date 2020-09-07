@@ -24,11 +24,21 @@ export type ProductsStackScreenProps = StackScreenProps<
 export type ShopStackParamList = {
   ProductsStack: undefined
   OrdersStack: undefined
+  UserProductsStack: undefined
 }
 
 export type ShopStackScreenProps = DrawerScreenProps<
   ShopStackParamList,
   'ProductsStack' | 'OrdersStack'
+>
+
+export type UserProductsStackParamList = {
+  UserProductsScreen: undefined
+}
+
+export type UserProductsScreenProps = StackScreenProps<
+  UserProductsStackParamList,
+  'UserProductsScreen'
 >
 
 export type OrdersStackParamList = {

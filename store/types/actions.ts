@@ -1,8 +1,7 @@
 /**
  * Product Actions
  */
-export const SEND_MESSAGE = 'SEND_MESSAGE'
-export const DELETE_MESSAGE = 'DELETE_MESSAGE'
+export const DELETE_PRODUCT = 'DELETE_PRODUCT'
 
 /**
  * Cart Actions
