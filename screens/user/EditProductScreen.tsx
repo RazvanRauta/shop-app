@@ -61,9 +61,6 @@ const EditProductScreen: FunctionComponent<AdminScreenProps> = ({
       errors.price = 'Required'
     } else if (!/^(?!,$)[\d,.]+$/.test(values.price)) {
       errors.price = 'Invalid Price'
-      //@ts-ignore
-    } else if (/0/.test(parseInt(values.price))) {
-      errors.price = "Can't be 0"
     }
 
     if (!values.imageUrl) {

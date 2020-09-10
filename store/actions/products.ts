@@ -1,39 +1,92 @@
 import {
-  CreateProductAction,
-  DeleteProductAction,
-  UpdateProductAction,
+  CreateProductThunkAction,
+  DeleteProductThunkAction,
+  FirebaseProducts,
+  SetProductsThunkAction,
+  UpdateProductThunkAction,
 } from '../types/products'
 import {
   DELETE_PRODUCT,
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
+  SET_PRODUCTS,
 } from 'store/types/actions'
 import { Values } from 'screens/user/EditProductScreen'
+import { API } from 'constants/API'
+import Product from 'models/product'
 
-export const deleteProduct = (productId: string): DeleteProductAction => {
-  return {
-    type: DELETE_PRODUCT,
-    pid: productId,
+export const fetchProducts = (): SetProductsThunkAction => async (dispatch) => {
+  try {
+    const response = await fetch(`${API}/products.json`)
+
+    if (!response.ok) {
+      throw new Error('Something went wrong')
+    }
+
+    const resData: FirebaseProducts = await response.json()
+
+    const loadedProducts = Object.keys(resData).map(
+      (name: string) =>
+        new Product(
+          name,
+          'u1',
+          resData[name].title,
+          resData[name].imageUrl,
+          resData[name].description,
+          parseInt(resData[name].price)
+        )
+    )
+
+    dispatch({
+      type: SET_PRODUCTS,
+      products: loadedProducts,
+    })
+  } catch (err) {
+    throw err
   }
 }
+
+export const deleteProduct = (
+  productId: string
+): DeleteProductThunkAction => async (dispatch) =>
+  dispatch({
+    type: DELETE_PRODUCT,
+    pid: productId,
+  })
+
 export const createProduct = ({
   title,
   price,
   imageUrl,
   description,
-}: Values): CreateProductAction => {
-  return {
+}: Values): CreateProductThunkAction => async (dispatch) => {
+  const response = await fetch(`${API}/products.json`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title,
+      price,
+      imageUrl,
+      description,
+    }),
+  })
+  const resData = await response.json()
+
+  console.log(resData)
+  dispatch({
     type: CREATE_PRODUCT,
-    productData: { title, price, imageUrl, description },
-  }
+    productData: { id: resData.name, title, price, imageUrl, description },
+  })
 }
+
 export const updateProduct = (
   { title, price, imageUrl, description }: Values,
   productId: string
-): UpdateProductAction => {
-  return {
+): UpdateProductThunkAction => async (dispatch) =>
+  dispatch({
     type: UPDATE_PRODUCT,
     pid: productId,
     productData: { title, price, imageUrl, description },
-  }
-}
+  })

@@ -3,6 +3,7 @@ import PRODUCTS from 'data/dummy-data'
 import {
   CREATE_PRODUCT,
   DELETE_PRODUCT,
+  SET_PRODUCTS,
   UPDATE_PRODUCT,
 } from 'store/types/actions'
 import Product from 'models/product'
@@ -17,6 +18,12 @@ export default (
   action: ProductsActionTypes
 ): ProductsState => {
   switch (action.type) {
+    case SET_PRODUCTS:
+      return {
+        availableProducts: action.products,
+        userProducts: action.products.filter((prod) => prod.ownerId === 'u1'),
+      }
+
     case DELETE_PRODUCT:
       return {
         ...state,
@@ -30,12 +37,12 @@ export default (
 
     case CREATE_PRODUCT:
       const newProduct = new Product(
-        `${new Date().toString}`,
+        //@ts-ignore
+        action.productData.id,
         'u1',
         action.productData.title,
         action.productData.imageUrl,
         action.productData.description,
-        //@ts-ignore
         parseInt(action.productData.price)
       )
       return {

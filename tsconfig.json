@@ -22,6 +22,9 @@
     "resolveJsonModule": true,
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "suppressImplicitAnyIndexErrors": true,
+
+
   }
 }
