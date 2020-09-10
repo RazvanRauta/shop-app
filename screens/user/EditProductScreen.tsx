@@ -39,11 +39,10 @@ const EditProductScreen: FunctionComponent<AdminScreenProps> = ({
   const submitHandler = (values: Values) => {
     if (editedProduct) {
       dispatch(productsActions.updateProduct(values, editedProduct.id))
-      navigation.navigate('UserProductsScreen')
     } else {
       dispatch(productsActions.createProduct(values))
-      navigation.navigate('UserProductsScreen')
     }
+    navigation.goBack()
   }
 
   const validate = (values: Values) => {
@@ -156,14 +155,6 @@ const EditProductScreen: FunctionComponent<AdminScreenProps> = ({
                 touched={touched.imageUrl}
                 error={errors.imageUrl}
               />
-              {/* <View style={styles.submit}>
-                <Button
-                  //@ts-ignore
-                  onPress={handleSubmit}
-                  title="Submit"
-                  color={Colors.primary}
-                />
-              </View> */}
             </View>
           )
         }}

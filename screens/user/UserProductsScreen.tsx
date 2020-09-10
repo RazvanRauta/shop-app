@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react'
-import { FlatList, Button, View, Text } from 'react-native'
+import { FlatList, Button, View, Text, Alert } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { RootState } from 'store/rootReducer'
@@ -20,9 +20,18 @@ const UserProductsScreen: FunctionComponent<AdminScreenProps> = ({
     navigation.navigate('EditProductsScreen', {
       productId: id,
       productTitle: title,
-      submit: (values, id) =>
-        dispatch(productsActions.updateProduct(values, id)),
     })
+  }
+
+  const deleteHandler = (id: string) => {
+    Alert.alert('Are you sure?', 'Do you really want to delete this item?', [
+      { text: 'No', style: 'default' },
+      {
+        text: 'Yes',
+        style: 'destructive',
+        onPress: () => dispatch(productsActions.deleteProduct(id)),
+      },
+    ])
   }
 
   return (
@@ -53,9 +62,7 @@ const UserProductsScreen: FunctionComponent<AdminScreenProps> = ({
           />
           <Button
             color={Colors.primary}
-            onPress={() => {
-              dispatch(productsActions.deleteProduct(itemData.item.id))
-            }}
+            onPress={() => deleteHandler(itemData.item.id)}
             title="Delete"
           />
         </ProductItem>
