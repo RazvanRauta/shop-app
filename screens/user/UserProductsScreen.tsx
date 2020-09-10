@@ -20,6 +20,8 @@ const UserProductsScreen: FunctionComponent<AdminScreenProps> = ({
     navigation.navigate('EditProductsScreen', {
       productId: id,
       productTitle: title,
+      submit: (values, id) =>
+        dispatch(productsActions.updateProduct(values, id)),
     })
   }
 

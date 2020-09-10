@@ -1,5 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import { DrawerScreenProps } from '@react-navigation/drawer'
+import { Values } from 'screens/user/EditProductScreen'
 
 export type RootStackParamList = {
   ShopNavigator: undefined
@@ -34,7 +35,11 @@ export type ShopStackScreenProps = DrawerScreenProps<
 
 export type AdminStackParamList = {
   UserProductsScreen: undefined
-  EditProductsScreen: { productId?: string; productTitle?: string }
+  EditProductsScreen: {
+    productId?: string
+    productTitle?: string
+    submit: (values: Values, id: string) => void
+  }
 }
 
 export type AdminScreenProps = StackScreenProps<

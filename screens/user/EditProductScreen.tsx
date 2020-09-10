@@ -8,7 +8,7 @@ import Colors from 'constants/Colors'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store/rootReducer'
 
-interface Values {
+export interface Values {
   description: string
   title: string
   price: string
@@ -24,10 +24,16 @@ interface Errors {
 
 const EditProductScreen: FunctionComponent<AdminScreenProps> = ({ route }) => {
   const prodId = route.params?.productId
+  const submit = route.params?.submit
 
   const editedProduct = useSelector((state: RootState) =>
     state.products.userProducts.find((prod) => prod.id === prodId)
   )
+
+  const handleSubmit = (values: Values) => {
+    //@ts-ignore
+    submit(values, prodId)
+  }
 
   const validate = (values: Values) => {
     const errors: Errors = {}
@@ -70,7 +76,7 @@ const EditProductScreen: FunctionComponent<AdminScreenProps> = ({ route }) => {
           price: `${editedProduct?.price ?? ''}`,
           imageUrl: editedProduct?.imageUrl ?? '',
         }}
-        onSubmit={(values: Values) => console.log(values)}
+        onSubmit={handleSubmit}
         validate={validate}
       >
         {({

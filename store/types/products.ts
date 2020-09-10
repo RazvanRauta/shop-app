@@ -1,5 +1,6 @@
 import Product from 'models/product'
-import { DELETE_PRODUCT } from './actions'
+import { Values } from 'screens/user/EditProductScreen'
+import { DELETE_PRODUCT, CREATE_PRODUCT, UPDATE_PRODUCT } from './actions'
 
 export interface ProductsState {
   availableProducts: Product[]
@@ -11,4 +12,18 @@ export interface DeleteProductAction {
   pid: string
 }
 
-export type ProductsActionTypes = DeleteProductAction
+export interface CreateProductAction {
+  type: typeof CREATE_PRODUCT
+  productData: Values
+}
+
+export interface UpdateProductAction {
+  type: typeof UPDATE_PRODUCT
+  pid: string
+  productData: Values
+}
+
+export type ProductsActionTypes =
+  | DeleteProductAction
+  | CreateProductAction
+  | UpdateProductAction
