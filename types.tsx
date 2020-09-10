@@ -38,7 +38,6 @@ export type AdminStackParamList = {
   EditProductsScreen: {
     productId?: string
     productTitle?: string
-    submit: (values: Values, id: string) => void
   }
 }
 

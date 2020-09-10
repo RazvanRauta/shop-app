@@ -26,9 +26,7 @@ import CartScreen from 'screens/shop/CartScreen'
 import OrderScreen from 'screens/shop/OrderScreen'
 import { Ionicons } from '@expo/vector-icons'
 import UserProductsScreen from 'screens/user/UserProductsScreen'
-import EditProductScreen, { Values } from 'screens/user/EditProductScreen'
-import { useDispatch } from 'react-redux'
-import * as productsActions from 'store/actions/products'
+import EditProductScreen from 'screens/user/EditProductScreen'
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -212,7 +210,6 @@ function OrdersNavigator() {
 const AdminStack = createStackNavigator<AdminStackParamList>()
 
 function AdminNavigator() {
-  const dispatch = useDispatch()
   return (
     <AdminStack.Navigator
       screenOptions={{
@@ -241,12 +238,7 @@ function AdminNavigator() {
               <Item
                 title="Add"
                 iconName={isAndroid ? 'md-create' : 'ios-create'}
-                onPress={() =>
-                  navigation.navigate('EditProductsScreen', {
-                    submit: (values: Values) =>
-                      dispatch(productsActions.createProduct(values)),
-                  })
-                }
+                onPress={() => navigation.navigate('EditProductsScreen')}
               />
             </HeaderButtons>
           ),
@@ -260,15 +252,6 @@ function AdminNavigator() {
           title: route.params?.productTitle
             ? `Edit: ${route.params.productTitle}`
             : 'Add Product',
-          headerRight: () => (
-            <HeaderButtons HeaderButtonComponent={HeaderButton}>
-              <Item
-                title="Add"
-                iconName={isAndroid ? 'md-save' : 'ios-save'}
-                onPress={() => route.params.submit}
-              />
-            </HeaderButtons>
-          ),
         })}
       />
     </AdminStack.Navigator>

@@ -1,12 +1,15 @@
-import React, { FunctionComponent } from 'react'
-import { StyleSheet, ScrollView, View, Button } from 'react-native'
+import React, { FunctionComponent, useLayoutEffect } from 'react'
+import { StyleSheet, ScrollView, View } from 'react-native'
 import { Formik } from 'formik'
 
 import { AdminScreenProps } from 'types'
 import Input from 'components/common/Input'
-import Colors from 'constants/Colors'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store/rootReducer'
+import { HeaderButtons, Item } from 'react-navigation-header-buttons'
+import HeaderButton from 'components/UI/HeaderButton'
+import { isAndroid } from 'constants/Platform'
+import * as productsActions from 'store/actions/products'
 
 export interface Values {
   description: string
@@ -22,17 +25,25 @@ interface Errors {
   imageUrl?: string
 }
 
-const EditProductScreen: FunctionComponent<AdminScreenProps> = ({ route }) => {
+const EditProductScreen: FunctionComponent<AdminScreenProps> = ({
+  route,
+  navigation,
+}) => {
   const prodId = route.params?.productId
-  const submit = route.params?.submit
+  const dispatch = useDispatch()
 
   const editedProduct = useSelector((state: RootState) =>
     state.products.userProducts.find((prod) => prod.id === prodId)
   )
 
-  const handleSubmit = (values: Values) => {
-    //@ts-ignore
-    submit(values, prodId)
+  const submitHandler = (values: Values) => {
+    if (editedProduct) {
+      dispatch(productsActions.updateProduct(values, editedProduct.id))
+      navigation.navigate('UserProductsScreen')
+    } else {
+      dispatch(productsActions.createProduct(values))
+      navigation.navigate('UserProductsScreen')
+    }
   }
 
   const validate = (values: Values) => {
@@ -76,7 +87,7 @@ const EditProductScreen: FunctionComponent<AdminScreenProps> = ({ route }) => {
           price: `${editedProduct?.price ?? ''}`,
           imageUrl: editedProduct?.imageUrl ?? '',
         }}
-        onSubmit={handleSubmit}
+        onSubmit={submitHandler}
         validate={validate}
       >
         {({
@@ -86,61 +97,76 @@ const EditProductScreen: FunctionComponent<AdminScreenProps> = ({ route }) => {
           values,
           touched,
           errors,
-        }) => (
-          <View style={styles.form}>
-            <Input
-              containerStyle={styles.inputContainer}
-              inputStyle={styles.input}
-              onChangeText={handleChange('title')}
-              onBlur={handleBlur('title')}
-              value={values.title}
-              label={'Title'}
-              touched={touched.title}
-              error={errors.title}
-            />
-            <Input
-              containerStyle={styles.inputContainer}
-              inputStyle={styles.input}
-              onChangeText={handleChange('description')}
-              onBlur={handleBlur('description')}
-              value={values.description}
-              label={'Description'}
-              touched={touched.description}
-              error={errors.description}
-            />
-            {!editedProduct ? (
+        }) => {
+          useLayoutEffect(() => {
+            navigation.setOptions({
+              headerRight: () => (
+                <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                  <Item
+                    title="Add"
+                    iconName={isAndroid ? 'md-save' : 'ios-save'}
+                    onPress={handleSubmit}
+                  />
+                </HeaderButtons>
+              ),
+            })
+          })
+          return (
+            <View style={styles.form}>
               <Input
                 containerStyle={styles.inputContainer}
                 inputStyle={styles.input}
-                onChangeText={handleChange('price')}
-                onBlur={handleBlur('price')}
-                value={values.price}
-                keyboardType="numeric"
-                label={'Price'}
-                touched={touched.price}
-                error={errors.price}
+                onChangeText={handleChange('title')}
+                onBlur={handleBlur('title')}
+                value={values.title}
+                label={'Title'}
+                touched={touched.title}
+                error={errors.title}
               />
-            ) : null}
-            <Input
-              containerStyle={styles.inputContainer}
-              inputStyle={styles.input}
-              onChangeText={handleChange('imageUrl')}
-              onBlur={handleBlur('imageUrl')}
-              value={values.imageUrl}
-              label={'ImageUrl'}
-              touched={touched.imageUrl}
-              error={errors.imageUrl}
-            />
-            <View style={styles.submit}>
-              <Button
-                //@ts-ignore
-                onPress={handleSubmit}
-                title="Submit"
-                color={Colors.primary}
+              <Input
+                containerStyle={styles.inputContainer}
+                inputStyle={styles.input}
+                onChangeText={handleChange('description')}
+                onBlur={handleBlur('description')}
+                value={values.description}
+                label={'Description'}
+                touched={touched.description}
+                error={errors.description}
               />
+              {!editedProduct ? (
+                <Input
+                  containerStyle={styles.inputContainer}
+                  inputStyle={styles.input}
+                  onChangeText={handleChange('price')}
+                  onBlur={handleBlur('price')}
+                  value={values.price}
+                  keyboardType="numeric"
+                  label={'Price'}
+                  touched={touched.price}
+                  error={errors.price}
+                />
+              ) : null}
+              <Input
+                containerStyle={styles.inputContainer}
+                inputStyle={styles.input}
+                onChangeText={handleChange('imageUrl')}
+                onBlur={handleBlur('imageUrl')}
+                value={values.imageUrl}
+                label={'ImageUrl'}
+                touched={touched.imageUrl}
+                error={errors.imageUrl}
+              />
+              {/* <View style={styles.submit}>
+                <Button
+                  //@ts-ignore
+                  onPress={handleSubmit}
+                  title="Submit"
+                  color={Colors.primary}
+                />
+              </View> */}
             </View>
-          </View>
-        )}
+          )
+        }}
       </Formik>
     </ScrollView>
   )

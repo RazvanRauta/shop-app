@@ -36,7 +36,7 @@ export default (
         action.productData.imageUrl,
         action.productData.description,
         //@ts-ignore
-        action.productData.price
+        parseInt(action.productData.price)
       )
       return {
         ...state,
