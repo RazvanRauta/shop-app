@@ -1,14 +1,14 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import { DrawerScreenProps } from '@react-navigation/drawer'
-import { Values } from 'screens/user/EditProductScreen'
 
 export type RootStackParamList = {
   ShopNavigator: undefined
+  AuthScreen: undefined
 }
 
 export type RootStackScreenProps = StackScreenProps<
   RootStackParamList,
-  'ShopNavigator'
+  'ShopNavigator' | 'AuthScreen'
 >
 
 export type ProductsStackParamList = {
