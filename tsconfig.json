@@ -24,7 +24,5 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "suppressImplicitAnyIndexErrors": true,
-
-
   }
 }

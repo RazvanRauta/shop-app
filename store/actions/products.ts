@@ -48,11 +48,20 @@ export const fetchProducts = (): SetProductsThunkAction => async (dispatch) => {
 
 export const deleteProduct = (
   productId: string
-): DeleteProductThunkAction => async (dispatch) =>
+): DeleteProductThunkAction => async (dispatch) => {
+  const response = await fetch(`${API}/products/${productId}.json`, {
+    method: 'DELETE',
+  })
+
+  if (!response.ok) {
+    throw new Error('Something went wrong!')
+  }
+
   dispatch({
     type: DELETE_PRODUCT,
     pid: productId,
   })
+}
 
 export const createProduct = ({
   title,
@@ -72,9 +81,13 @@ export const createProduct = ({
       description,
     }),
   })
+
+  if (!response.ok) {
+    throw new Error('Something went wrong')
+  }
+
   const resData = await response.json()
 
-  console.log(resData)
   dispatch({
     type: CREATE_PRODUCT,
     productData: { id: resData.name, title, price, imageUrl, description },
@@ -82,11 +95,28 @@ export const createProduct = ({
 }
 
 export const updateProduct = (
-  { title, price, imageUrl, description }: Values,
+  { title, imageUrl, description }: Omit<Values, 'price'>,
   productId: string
-): UpdateProductThunkAction => async (dispatch) =>
+): UpdateProductThunkAction => async (dispatch) => {
+  const response = await fetch(`${API}/products/${productId}.json`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title,
+      imageUrl,
+      description,
+    }),
+  })
+
+  if (!response.ok) {
+    throw new Error('Something went wrong!')
+  }
+
   dispatch({
     type: UPDATE_PRODUCT,
     pid: productId,
-    productData: { title, price, imageUrl, description },
+    productData: { title, imageUrl, description },
   })
+}

@@ -41,7 +41,7 @@ export type CreateProductThunkAction = ThunkAction<
 export interface UpdateProductAction {
   type: typeof UPDATE_PRODUCT
   pid: string
-  productData: Values
+  productData: Omit<Values, 'price'>
 }
 
 export type UpdateProductThunkAction = ThunkAction<

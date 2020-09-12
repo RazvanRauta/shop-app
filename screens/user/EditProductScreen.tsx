@@ -1,5 +1,17 @@
-import React, { FunctionComponent, useLayoutEffect } from 'react'
-import { StyleSheet, ScrollView, View } from 'react-native'
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react'
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  ActivityIndicator,
+  Alert,
+} from 'react-native'
 import { Formik } from 'formik'
 
 import { AdminScreenProps } from 'types'
@@ -10,6 +22,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import HeaderButton from 'components/UI/HeaderButton'
 import { isAndroid } from 'constants/Platform'
 import * as productsActions from 'store/actions/products'
+import Colors from 'constants/Colors'
 
 export interface Values {
   description: string
@@ -29,6 +42,9 @@ const EditProductScreen: FunctionComponent<AdminScreenProps> = ({
   route,
   navigation,
 }) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [isError, setError] = useState(null)
+
   const prodId = route.params?.productId
   const dispatch = useDispatch()
 
@@ -36,26 +52,39 @@ const EditProductScreen: FunctionComponent<AdminScreenProps> = ({
     state.products.userProducts.find((prod) => prod.id === prodId)
   )
 
-  const submitHandler = (values: Values) => {
-    if (editedProduct) {
-      dispatch(productsActions.updateProduct(values, editedProduct.id))
-    } else {
-      dispatch(productsActions.createProduct(values))
+  useEffect(() => {
+    if (isError) {
+      Alert.alert('An error occurred!', isError ?? '', [{ text: 'Okay' }])
     }
-    navigation.goBack()
-  }
+  }, [isError])
+
+  const submitHandler = useCallback(async (values: Values) => {
+    setError(null)
+    setIsLoading(true)
+    try {
+      if (editedProduct) {
+        await dispatch(productsActions.updateProduct(values, editedProduct.id))
+      } else {
+        await dispatch(productsActions.createProduct(values))
+      }
+      navigation.goBack()
+    } catch (err) {
+      setError(err.message)
+    }
+    setIsLoading(false)
+  }, [])
 
   const validate = (values: Values) => {
     const errors: Errors = {}
     if (!values.description) {
       errors.description = 'Required'
     } else if (values.description.length < 10) {
-      errors.description = 'Minimun length of 10'
+      errors.description = 'Minimum length of 10'
     }
     if (!values.title) {
       errors.title = 'Required'
     } else if (values.title.length < 3) {
-      errors.title = 'Minimun length of 3'
+      errors.title = 'Minimum length of 3'
     }
     if (!values.price) {
       errors.price = 'Required'
@@ -74,6 +103,14 @@ const EditProductScreen: FunctionComponent<AdminScreenProps> = ({
     }
     return errors
   }
+
+  if (isLoading)
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    )
+
   return (
     <ScrollView>
       <Formik
@@ -163,8 +200,17 @@ const EditProductScreen: FunctionComponent<AdminScreenProps> = ({
 export default EditProductScreen
 
 const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   form: {
     margin: 20,
+  },
+  message: {
+    fontFamily: 'open-sans-bold',
+    fontSize: 20,
   },
   inputContainer: {
     width: '100%',

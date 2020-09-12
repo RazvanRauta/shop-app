@@ -27,6 +27,8 @@ const ProductsOverviewScreen: FunctionComponent<ProductsStackScreenProps> = ({
   navigation,
 }) => {
   const [loading, setLoading] = useState(false)
+  const [isRefreshing, setRefreshing] = useState(false)
+
   const [err, setError] = useState(null)
 
   const products = useSelector(
@@ -35,20 +37,26 @@ const ProductsOverviewScreen: FunctionComponent<ProductsStackScreenProps> = ({
   const dispatch = useDispatch()
 
   const loadProducts = useCallback(async () => {
-    setLoading(true)
     setError(null)
+    setRefreshing(true)
     try {
       await dispatch(productsActions.fetchProducts())
     } catch (err) {
       setError(err.message)
     }
-    setLoading(false)
+    setRefreshing(false)
   }, [dispatch, setLoading, setError])
+
+  useEffect(() => {
+    const focus = navigation.addListener('focus', loadProducts)
+    return focus
+  }, [loadProducts])
 
   useEffect(() => {
     let isCancelled = false
     if (!isCancelled) {
-      loadProducts()
+      setLoading(true)
+      loadProducts().then(() => setLoading(false))
     }
     return () => {
       isCancelled = true
@@ -93,6 +101,8 @@ const ProductsOverviewScreen: FunctionComponent<ProductsStackScreenProps> = ({
 
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isRefreshing}
       data={products}
       renderItem={(itemData) => (
         <ProductItem {...itemData.item} onSelect={() => onSelect(itemData)}>

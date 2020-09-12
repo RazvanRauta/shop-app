@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from 'react'
-import { StyleSheet, View, Button, Text } from 'react-native'
+import React, { FunctionComponent, useState } from 'react'
+import { StyleSheet, View, Button, Text, ActivityIndicator } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { ProductsStackScreenProps } from 'types'
@@ -11,6 +11,9 @@ import * as cartActions from 'store/actions/cart'
 import * as orderActions from 'store/actions/orders'
 
 const CartScreen: FunctionComponent<ProductsStackScreenProps> = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useDispatch()
+
   const cartTotalAmount = useSelector(
     (state: RootState) => state.cart.totalAmount
   )
@@ -19,7 +22,13 @@ const CartScreen: FunctionComponent<ProductsStackScreenProps> = () => {
       .map(([id, item]) => ({ item, id }))
       .sort((a, b) => (a.id > b.id ? 1 : -1))
   )
-  const dispatch = useDispatch()
+
+  const sendOrderHandler = async () => {
+    setIsLoading(true)
+    await dispatch(orderActions.addOrder(cartItems, cartTotalAmount))
+    setIsLoading(false)
+  }
+
   return (
     <View style={styles.cartScreen}>
       <View style={styles.summary}>
@@ -30,14 +39,16 @@ const CartScreen: FunctionComponent<ProductsStackScreenProps> = () => {
             ${Math.round((cartTotalAmount * 100) / 100).toFixed(2)}
           </Text>
         </Text>
-        <Button
-          disabled={!cartItems.length}
-          color={Colors.accent}
-          title="Order Now"
-          onPress={() =>
-            dispatch(orderActions.addOrder(cartItems, cartTotalAmount))
-          }
-        />
+        {isLoading ? (
+          <ActivityIndicator size="small" color={Colors.primary} />
+        ) : (
+          <Button
+            disabled={!cartItems.length}
+            color={Colors.accent}
+            title="Order Now"
+            onPress={sendOrderHandler}
+          />
+        )}
       </View>
       <FlatList
         data={cartItems}
@@ -58,6 +69,11 @@ const CartScreen: FunctionComponent<ProductsStackScreenProps> = () => {
 export default CartScreen
 
 const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   cartScreen: {
     margin: 20,
   },
