@@ -15,7 +15,11 @@ import { Values } from 'screens/user/EditProductScreen'
 import { API } from 'constants/API'
 import Product from 'models/product'
 
-export const fetchProducts = (): SetProductsThunkAction => async (dispatch) => {
+export const fetchProducts = (): SetProductsThunkAction => async (
+  dispatch,
+  getState
+) => {
+  const { userId } = getState().auth
   try {
     const response = await fetch(`${API}/products.json`)
 
@@ -29,7 +33,7 @@ export const fetchProducts = (): SetProductsThunkAction => async (dispatch) => {
       (name: string) =>
         new Product(
           name,
-          'u1',
+          resData[name].ownerId,
           resData[name].title,
           resData[name].imageUrl,
           resData[name].description,
@@ -40,6 +44,7 @@ export const fetchProducts = (): SetProductsThunkAction => async (dispatch) => {
     dispatch({
       type: SET_PRODUCTS,
       products: loadedProducts,
+      userProducts: loadedProducts.filter((prod) => prod.ownerId === userId),
     })
   } catch (err) {
     throw err
@@ -48,10 +53,14 @@ export const fetchProducts = (): SetProductsThunkAction => async (dispatch) => {
 
 export const deleteProduct = (
   productId: string
-): DeleteProductThunkAction => async (dispatch) => {
-  const response = await fetch(`${API}/products/${productId}.json`, {
-    method: 'DELETE',
-  })
+): DeleteProductThunkAction => async (dispatch, getState) => {
+  const token = getState().auth.token
+  const response = await fetch(
+    `${API}/products/${productId}.json?auth=${token}`,
+    {
+      method: 'DELETE',
+    }
+  )
 
   if (!response.ok) {
     throw new Error('Something went wrong!')
@@ -68,8 +77,10 @@ export const createProduct = ({
   price,
   imageUrl,
   description,
-}: Values): CreateProductThunkAction => async (dispatch) => {
-  const response = await fetch(`${API}/products.json`, {
+}: Values): CreateProductThunkAction => async (dispatch, getState) => {
+  const { token, userId } = getState().auth
+
+  const response = await fetch(`${API}/products.json?auth=${token}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -79,6 +90,7 @@ export const createProduct = ({
       price,
       imageUrl,
       description,
+      ownerId: userId,
     }),
   })
 
@@ -90,25 +102,36 @@ export const createProduct = ({
 
   dispatch({
     type: CREATE_PRODUCT,
-    productData: { id: resData.name, title, price, imageUrl, description },
+    productData: {
+      id: resData.name,
+      title,
+      price,
+      imageUrl,
+      description,
+      ownerId: userId,
+    },
   })
 }
 
 export const updateProduct = (
   { title, imageUrl, description }: Omit<Values, 'price'>,
   productId: string
-): UpdateProductThunkAction => async (dispatch) => {
-  const response = await fetch(`${API}/products/${productId}.json`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      title,
-      imageUrl,
-      description,
-    }),
-  })
+): UpdateProductThunkAction => async (dispatch, getState) => {
+  const { token } = getState().auth
+  const response = await fetch(
+    `${API}/products/${productId}.json?auth=${token}`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title,
+        imageUrl,
+        description,
+      }),
+    }
+  )
 
   if (!response.ok) {
     throw new Error('Something went wrong!')

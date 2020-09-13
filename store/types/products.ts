@@ -1,6 +1,5 @@
 import Product from 'models/product'
 import { ThunkAction } from 'redux-thunk'
-import { Values } from 'screens/user/EditProductScreen'
 import { RootState } from 'store/rootReducer'
 import {
   DELETE_PRODUCT,
@@ -26,6 +25,13 @@ export type DeleteProductThunkAction = ThunkAction<
   DeleteProductAction
 >
 
+export interface Values {
+  description: string
+  title: string
+  price: string
+  imageUrl: string
+  ownerId: string
+}
 export interface CreateProductAction {
   type: typeof CREATE_PRODUCT
   productData: Values
@@ -41,7 +47,7 @@ export type CreateProductThunkAction = ThunkAction<
 export interface UpdateProductAction {
   type: typeof UPDATE_PRODUCT
   pid: string
-  productData: Omit<Values, 'price'>
+  productData: Omit<Values, 'price' | 'ownerId'>
 }
 
 export type UpdateProductThunkAction = ThunkAction<
@@ -65,6 +71,7 @@ export type FirebaseProducts = FirebaseProduct[]
 export interface SetProductsAction {
   type: typeof SET_PRODUCTS
   products: Product[]
+  userProducts: Product[]
 }
 
 export type SetProductsThunkAction = ThunkAction<

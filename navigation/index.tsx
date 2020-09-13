@@ -3,11 +3,10 @@ import {
   DefaultTheme,
   DarkTheme,
 } from '@react-navigation/native'
-import AsyncStorage from '@react-native-community/async-storage'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 
-import React, { useReducer, useEffect, Reducer } from 'react'
+import React from 'react'
 import { ColorSchemeName } from 'react-native'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
@@ -29,19 +28,10 @@ import OrderScreen from 'screens/shop/OrderScreen'
 import { Ionicons } from '@expo/vector-icons'
 import UserProductsScreen from 'screens/user/UserProductsScreen'
 import EditProductScreen from 'screens/user/EditProductScreen'
-import { AuthContext } from 'contexts/Auth/AuthContext'
 import AuthScreen from 'screens/user/AuthScreen'
-
-export type AuthAction = {
-  type: 'RESTORE_TOKEN' | 'SIGN_IN' | 'SIGN_OUT'
-  token?: string | null | undefined
-}
-
-export type AuthState = {
-  userToken: string | null | undefined
-  isLoading: boolean
-  isSignout: boolean
-}
+import { useSelector } from 'react-redux'
+import { RootState } from 'store/rootReducer'
+import StartUpScreen from 'screens/StartUpScreen'
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -50,89 +40,13 @@ export default function Navigation({
 }: {
   colorScheme: ColorSchemeName
 }) {
-  const [state, dispatch] = useReducer<Reducer<AuthState, AuthAction>>(
-    (prevState: AuthState, action: AuthAction) => {
-      switch (action.type) {
-        case 'RESTORE_TOKEN':
-          return {
-            ...prevState,
-            userToken: action.token,
-            isLoading: false,
-          }
-        case 'SIGN_IN':
-          return {
-            ...prevState,
-            isSignout: false,
-            userToken: action.token,
-          }
-        case 'SIGN_OUT':
-          return {
-            ...prevState,
-            isSignout: true,
-            userToken: null,
-          }
-      }
-    },
-    {
-      isLoading: true,
-      isSignout: false,
-      userToken: null,
-    }
-  )
-
-  useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
-    const bootstrapAsync = async () => {
-      let userToken
-
-      try {
-        userToken = await AsyncStorage.getItem('userToken')
-      } catch (e) {
-        // Restoring token failed
-      }
-
-      // After restoring token, we may need to validate it in production apps
-
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken })
-    }
-
-    bootstrapAsync()
-  }, [])
-
-  const authContext = React.useMemo(
-    () => ({
-      signIn: async () => {
-        // In a production app, we need to send some data (usually username, password) to server and get a token
-        // We will also need to handle errors if sign in failed
-        // After getting token, we need to persist the token using `AsyncStorage`
-        // In the example, we'll use a dummy token
-
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' })
-      },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
-      signUp: async () => {
-        // In a production app, we need to send user data to server and get a token
-        // We will also need to handle errors if sign up failed
-        // After getting token, we need to persist the token using `AsyncStorage`
-        // In the example, we'll use a dummy token
-
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' })
-      },
-    }),
-    []
-  )
-
   return (
-    <AuthContext.Provider value={authContext}>
-      <NavigationContainer
-        linking={LinkingConfiguration}
-        theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-      >
-        <RootNavigator userToken={state.userToken} />
-      </NavigationContainer>
-    </AuthContext.Provider>
+    <NavigationContainer
+      linking={LinkingConfiguration}
+      theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+    >
+      <RootNavigator />
+    </NavigationContainer>
   )
 }
 
@@ -140,11 +54,29 @@ export default function Navigation({
 // Read more here: https://reactnavigation.org/docs/modal
 const RootStack = createStackNavigator<RootStackParamList>()
 
-function RootNavigator({ userToken }: any) {
+function RootNavigator() {
+  const userToken = useSelector((state: RootState) => state.auth.token)
+
   return (
-    <RootStack.Navigator initialRouteName="ShopNavigator">
+    <RootStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: isAndroid ? Colors.primary : '',
+        },
+        headerTintColor: isAndroid ? 'white' : '',
+      }}
+    >
+      <RootStack.Screen
+        name="StartUpScreen"
+        component={StartUpScreen}
+        options={{ headerTitle: 'Loading' }}
+      />
       {userToken == null ? (
-        <RootStack.Screen name="AuthScreen" component={AuthScreen} />
+        <RootStack.Screen
+          name="AuthScreen"
+          component={AuthScreen}
+          options={{ headerTitle: 'Authenticate' }}
+        />
       ) : (
         <RootStack.Screen
           name="ShopNavigator"

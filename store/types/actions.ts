@@ -17,3 +17,11 @@ export const REMOVE_FROM_CART = 'REMOVE_FROM_CART'
  */
 export const ADD_ORDER = 'ADD_ORDER'
 export const SET_ORDERS = 'SET_ORDERS'
+
+/**
+ * Auth Actions
+ */
+
+export const SIGN_UP = 'SIGN_UP'
+export const SIGN_IN = 'SIGN_IN'
+export const AUTHENTICATE = 'AUTHENTICATE'

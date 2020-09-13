@@ -4,11 +4,12 @@ import { DrawerScreenProps } from '@react-navigation/drawer'
 export type RootStackParamList = {
   ShopNavigator: undefined
   AuthScreen: undefined
+  StartUpScreen: undefined
 }
 
 export type RootStackScreenProps = StackScreenProps<
   RootStackParamList,
-  'ShopNavigator' | 'AuthScreen'
+  'ShopNavigator' | 'AuthScreen' | 'StartUpScreen'
 >
 
 export type ProductsStackParamList = {

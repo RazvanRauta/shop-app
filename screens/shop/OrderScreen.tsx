@@ -21,7 +21,7 @@ const OrderScreen: FunctionComponent<OrdersStackScreenProps> = () => {
 
   useEffect(() => {
     setLoading(true)
-    dispatch(ordersActions.fetchOrders('u1'))
+    dispatch(ordersActions.fetchOrders())
     setLoading(false)
   }, [dispatch])
 

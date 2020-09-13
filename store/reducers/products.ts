@@ -1,5 +1,4 @@
 import { ProductsState, ProductsActionTypes } from 'store/types/products'
-import PRODUCTS from 'data/dummy-data'
 import {
   CREATE_PRODUCT,
   DELETE_PRODUCT,
@@ -9,8 +8,8 @@ import {
 import Product from 'models/product'
 
 const initialState: ProductsState = {
-  availableProducts: PRODUCTS,
-  userProducts: PRODUCTS.filter((prod) => prod.ownerId === 'u1'),
+  availableProducts: [],
+  userProducts: [],
 }
 
 export default (
@@ -21,7 +20,7 @@ export default (
     case SET_PRODUCTS:
       return {
         availableProducts: action.products,
-        userProducts: action.products.filter((prod) => prod.ownerId === 'u1'),
+        userProducts: action.userProducts,
       }
 
     case DELETE_PRODUCT:
@@ -39,7 +38,7 @@ export default (
       const newProduct = new Product(
         //@ts-ignore
         action.productData.id,
-        'u1',
+        action.productData.ownerId,
         action.productData.title,
         action.productData.imageUrl,
         action.productData.description,

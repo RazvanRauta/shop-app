@@ -7,9 +7,10 @@ import { AddOrderThunkAction, SetOrdersThunkAction } from 'store/types/orders'
 export const addOrder = (
   cartItems: { item: CartItem; id: string }[],
   totalAmount: number
-): AddOrderThunkAction => async (dispatch) => {
+): AddOrderThunkAction => async (dispatch, getState) => {
+  const { token, userId } = getState().auth
   const date = new Date()
-  const response = await fetch(`${API}/orders/u1.json`, {
+  const response = await fetch(`${API}/orders/${userId}.json?auth=${token}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -38,9 +39,11 @@ export const addOrder = (
   })
 }
 
-export const fetchOrders = (
-  userId: string = 'u1'
-): SetOrdersThunkAction => async (dispatch) => {
+export const fetchOrders = (): SetOrdersThunkAction => async (
+  dispatch,
+  getState
+) => {
+  const { userId } = getState().auth
   const response = await fetch(`${API}/orders/${userId}.json`, {
     method: 'GET',
   })
@@ -51,15 +54,17 @@ export const fetchOrders = (
 
   const resData = await response.json()
 
-  const loadedOrders = Object.keys(resData).map(
-    (name: string) =>
-      new Order(
-        name,
-        resData[name].cartItems,
-        resData[name].totalAmount,
-        new Date(resData[name].date)
+  const loadedOrders = resData
+    ? Object.keys(resData).map(
+        (name: string) =>
+          new Order(
+            name,
+            resData[name].cartItems,
+            resData[name].totalAmount,
+            new Date(resData[name].date)
+          )
       )
-  )
+    : []
 
   dispatch({ type: SET_ORDERS, orders: loadedOrders })
 }
