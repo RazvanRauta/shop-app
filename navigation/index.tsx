@@ -4,7 +4,12 @@ import {
   DarkTheme,
 } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { createDrawerNavigator } from '@react-navigation/drawer'
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItem,
+  DrawerItemList,
+} from '@react-navigation/drawer'
 
 import React from 'react'
 import { ColorSchemeName } from 'react-native'
@@ -29,10 +34,10 @@ import { Ionicons } from '@expo/vector-icons'
 import UserProductsScreen from 'screens/user/UserProductsScreen'
 import EditProductScreen from 'screens/user/EditProductScreen'
 import AuthScreen from 'screens/user/AuthScreen'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store/rootReducer'
 import StartUpScreen from 'screens/StartUpScreen'
-
+import * as authActions from 'store/actions/auth'
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
 export default function Navigation({
@@ -55,8 +60,6 @@ export default function Navigation({
 const RootStack = createStackNavigator<RootStackParamList>()
 
 function RootNavigator() {
-  const userToken = useSelector((state: RootState) => state.auth.token)
-
   return (
     <RootStack.Navigator
       screenOptions={{
@@ -69,32 +72,56 @@ function RootNavigator() {
       <RootStack.Screen
         name="StartUpScreen"
         component={StartUpScreen}
-        options={{ headerTitle: 'Loading' }}
+        options={{ headerTitle: 'Loading...' }}
       />
-      {userToken == null ? (
-        <RootStack.Screen
-          name="AuthScreen"
-          component={AuthScreen}
-          options={{ headerTitle: 'Authenticate' }}
-        />
-      ) : (
-        <RootStack.Screen
-          name="ShopNavigator"
-          component={ShopNavigator}
-          options={{ headerShown: false }}
-        />
-      )}
+      <RootStack.Screen
+        name="AuthScreen"
+        component={AuthScreen}
+        options={{ headerTitle: 'Authenticate' }}
+      />
+      <RootStack.Screen
+        name="ShopNavigator"
+        component={ShopNavigator}
+        options={{ headerShown: false }}
+      />
     </RootStack.Navigator>
   )
 }
 
 const ShopStack = createDrawerNavigator<ShopStackParamList>()
 
-function ShopNavigator() {
+function ShopNavigator({ navigation }: any) {
+  const dispatch = useDispatch()
   return (
     <ShopStack.Navigator
       drawerContentOptions={{ activeTintColor: Colors.primary }}
       initialRouteName="ProductsStack"
+      drawerContent={(props) => (
+        <DrawerContentScrollView {...props}>
+          <DrawerItemList {...props} />
+          <DrawerItem
+            label="LogOut"
+            labelStyle={{ color: Colors.primary }}
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 30,
+            }}
+            icon={() => (
+              <Ionicons
+                name={isAndroid ? 'md-exit' : 'ios-exit'}
+                size={20}
+                color={Colors.primary}
+              />
+            )}
+            onPress={() => {
+              dispatch(authActions.logout())
+              navigation.navigate('AuthScreen')
+            }}
+          />
+        </DrawerContentScrollView>
+      )}
     >
       <ShopStack.Screen
         name="ProductsStack"

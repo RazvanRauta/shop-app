@@ -1,4 +1,4 @@
-import { AUTHENTICATE, SIGN_IN, SIGN_UP } from 'store/types/actions'
+import { AUTHENTICATE, LOGOUT, SIGN_IN, SIGN_UP } from 'store/types/actions'
 import { AuthState, AuthActionsType } from 'store/types/auth'
 
 const initialState: AuthState = {
@@ -25,6 +25,13 @@ export default (state = initialState, action: AuthActionsType): AuthState => {
       return {
         token: action.token,
         userId: action.userId,
+      }
+    case LOGOUT:
+      return {
+        //@ts-ignore
+        token: null,
+        //@ts-ignore
+        userId: null,
       }
     default:
       return state

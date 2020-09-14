@@ -1,6 +1,6 @@
 import { ThunkAction } from 'redux-thunk'
 import { RootState } from 'store/rootReducer'
-import { SIGN_UP, SIGN_IN, AUTHENTICATE } from './actions'
+import { SIGN_UP, SIGN_IN, AUTHENTICATE, LOGOUT } from './actions'
 
 export interface AuthState {
   token: string
@@ -46,4 +46,19 @@ export type SignInThunkAction = ThunkAction<
   SignInAction
 >
 
-export type AuthActionsType = SignInAction | SignUpAction | AuthenticateAction
+export interface LogoutAction {
+  type: typeof LOGOUT
+}
+
+export type LogoutThunkAction = ThunkAction<
+  void,
+  RootState,
+  unknown,
+  LogoutAction
+>
+
+export type AuthActionsType =
+  | SignInAction
+  | SignUpAction
+  | AuthenticateAction
+  | LogoutAction

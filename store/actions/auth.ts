@@ -1,9 +1,10 @@
 import { SIGN_UP_API, SIGN_IN_API } from 'constants/API'
-import { AUTHENTICATE, SIGN_IN, SIGN_UP } from 'store/types/actions'
+import { AUTHENTICATE, LOGOUT, SIGN_IN, SIGN_UP } from 'store/types/actions'
 import {
   SignUpThunkAction,
   SignInThunkAction,
   AuthenticateAction,
+  LogoutAction,
 } from 'store/types/auth'
 import AsyncStorage from '@react-native-community/async-storage'
 
@@ -59,7 +60,6 @@ export const signIn = (
   email: string,
   password: string
 ): SignInThunkAction => async (dispatch) => {
-  console.log('Login')
   const response = await fetch(SIGN_IN_API, {
     method: 'POST',
     headers: {
@@ -97,6 +97,11 @@ export const signIn = (
     new Date().getTime() + parseInt(resData.expiresIn) * 1000
   )
   saveDataToStorage(resData.idToken, resData.localId, expirationDate)
+}
+
+export const logout = (): LogoutAction => {
+  AsyncStorage.setItem('userData', JSON.stringify({}))
+  return { type: LOGOUT }
 }
 
 const saveDataToStorage = (
