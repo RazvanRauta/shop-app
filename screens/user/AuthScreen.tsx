@@ -8,7 +8,6 @@ import {
   StyleSheet,
   View,
   ScrollView,
-  KeyboardAvoidingView,
   Button,
   ActivityIndicator,
   Alert,
@@ -32,7 +31,9 @@ interface Errors {
   password?: string
 }
 
-const AuthScreen: FunctionComponent<RootStackScreenProps> = () => {
+const AuthScreen: FunctionComponent<RootStackScreenProps> = ({
+  navigation,
+}) => {
   const [isSignUP, setIsSignUp] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(null)
@@ -57,6 +58,7 @@ const AuthScreen: FunctionComponent<RootStackScreenProps> = () => {
     setIsError(null)
     try {
       await dispatch(action)
+      navigation.navigate('ShopNavigator')
     } catch (err) {
       setIsError(err.message)
       setIsLoading(false)
@@ -81,11 +83,7 @@ const AuthScreen: FunctionComponent<RootStackScreenProps> = () => {
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
-      keyboardVerticalOffset={50}
-      style={styles.screen}
-    >
+    <LinearGradient colors={['#ffedff', '#ffe3ff']} style={styles.gradient}>
       <Formik
         initialValues={{
           email: '',
@@ -103,65 +101,60 @@ const AuthScreen: FunctionComponent<RootStackScreenProps> = () => {
           touched,
           errors,
         }) => (
-          <LinearGradient
-            colors={['#ffedff', '#ffe3ff']}
-            style={styles.gradient}
-          >
-            <View style={styles.card}>
-              <ScrollView>
-                <Input
-                  containerStyle={styles.inputContainer}
-                  inputStyle={styles.input}
-                  onChangeText={handleChange('email')}
-                  onBlur={handleBlur('email')}
-                  value={values.email}
-                  label={'Email'}
-                  touched={touched.email}
-                  error={errors.email}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-                <Input
-                  containerStyle={styles.inputContainer}
-                  inputStyle={styles.input}
-                  onChangeText={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  value={values.password}
-                  label={'Password'}
-                  touched={touched.password}
-                  error={errors.password}
-                  keyboardType="default"
-                  autoCapitalize="none"
-                  secureTextEntry
-                />
-                <View style={styles.actions}>
-                  {isLoading ? (
-                    <ActivityIndicator size="small" color={Colors.primary} />
-                  ) : (
-                    <Button
-                      color={Colors.primary}
-                      title={!isSignUP ? 'Login' : 'Sign Up'}
-                      //@ts-ignore
-                      onPress={handleSubmit}
-                    />
-                  )}
-                </View>
-                <View style={styles.actions}>
+          <View style={styles.card}>
+            <ScrollView>
+              <Input
+                containerStyle={styles.inputContainer}
+                inputStyle={styles.input}
+                onChangeText={handleChange('email')}
+                onBlur={handleBlur('email')}
+                value={values.email}
+                label={'Email'}
+                touched={touched.email}
+                error={errors.email}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+              <Input
+                containerStyle={styles.inputContainer}
+                inputStyle={styles.input}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                value={values.password}
+                label={'Password'}
+                touched={touched.password}
+                error={errors.password}
+                keyboardType="default"
+                autoCapitalize="none"
+                secureTextEntry
+              />
+              <View style={styles.actions}>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color={Colors.primary} />
+                ) : (
                   <Button
-                    color={Colors.accent}
-                    title={`Switch to ${!isSignUP ? 'Sign Up' : 'Login'}`}
-                    onPress={() => {
-                      resetForm()
-                      setIsSignUp((prev) => !prev)
-                    }}
+                    color={Colors.primary}
+                    title={!isSignUP ? 'Login' : 'Sign Up'}
+                    //@ts-ignore
+                    onPress={handleSubmit}
                   />
-                </View>
-              </ScrollView>
-            </View>
-          </LinearGradient>
+                )}
+              </View>
+              <View style={styles.actions}>
+                <Button
+                  color={Colors.accent}
+                  title={`Switch to ${!isSignUP ? 'Sign Up' : 'Login'}`}
+                  onPress={() => {
+                    resetForm()
+                    setIsSignUp((prev) => !prev)
+                  }}
+                />
+              </View>
+            </ScrollView>
+          </View>
         )}
       </Formik>
-    </KeyboardAvoidingView>
+    </LinearGradient>
   )
 }
 

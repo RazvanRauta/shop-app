@@ -64,9 +64,9 @@ function RootNavigator() {
     <RootStack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: isAndroid ? Colors.primary : '',
+          backgroundColor: isAndroid ? Colors.primary : undefined,
         },
-        headerTintColor: isAndroid ? 'white' : '',
+        headerTintColor: isAndroid ? 'white' : undefined,
       }}
     >
       <RootStack.Screen
@@ -177,9 +177,9 @@ function ProductsNavigator() {
     <ProductsStack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: isAndroid ? Colors.primary : '',
+          backgroundColor: isAndroid ? Colors.primary : undefined,
         },
-        headerTintColor: isAndroid ? 'white' : '',
+        headerTintColor: isAndroid ? 'white' : undefined,
       }}
       initialRouteName="ProductsOverviewScreen"
     >
@@ -238,9 +238,9 @@ function OrdersNavigator() {
     <OrdersStack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: isAndroid ? Colors.primary : '',
+          backgroundColor: isAndroid ? Colors.primary : undefined,
         },
-        headerTintColor: isAndroid ? 'white' : '',
+        headerTintColor: isAndroid ? 'white' : undefined,
       }}
     >
       <OrdersStack.Screen
@@ -270,9 +270,9 @@ function AdminNavigator() {
     <AdminStack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: isAndroid ? Colors.primary : '',
+          backgroundColor: isAndroid ? Colors.primary : undefined,
         },
-        headerTintColor: isAndroid ? 'white' : '',
+        headerTintColor: isAndroid ? 'white' : undefined,
       }}
     >
       <AdminStack.Screen
